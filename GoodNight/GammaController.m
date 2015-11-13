@@ -12,6 +12,11 @@
 
 @implementation GammaController
 
+struct IOMobileFramebufferDisplaySize {
+    uint32_t width;
+    uint32_t height;
+};
+
 + (void)setGammaWithRed:(float)red green:(float)green blue:(float)blue {
     NSUInteger rs = red * 0x100;
     NSParameterAssert(rs <= 0x100);
@@ -29,6 +34,14 @@
     
     IOMobileFramebufferReturn (*IOMobileFramebufferGetMainDisplay)(IOMobileFramebufferConnection *connection) = dlsym(IOMobileFramebuffer, "IOMobileFramebufferGetMainDisplay");
     NSParameterAssert(IOMobileFramebufferGetMainDisplay);
+    
+    IOMobileFramebufferReturn (*IOMobileFramebufferIsMainDisplay)(IOMobileFramebufferConnection connection, bool size) = dlsym(IOMobileFramebuffer, "IOMobileFramebufferIsMainDisplay");
+    bool size;
+    IOMobileFramebufferIsMainDisplay(fb, size);
+
+    NSString* errorStr;
+    errorStr = [NSString stringWithFormat:@"result: %i", size];
+    
     
     IOMobileFramebufferGetMainDisplay(&fb);
     
